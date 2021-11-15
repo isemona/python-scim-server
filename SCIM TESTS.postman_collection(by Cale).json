@@ -1,0 +1,313 @@
+{
+	"info": {
+		"_postman_id": "720d51c4-e63c-4184-8f52-a4f3de0bcd2f",
+		"name": "SCIM TESTS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Users",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Bearer 123456789",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Users?startIndex=1&count=100",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Users"
+					],
+					"query": [
+						{
+							"key": "startIndex",
+							"value": "1"
+						},
+						{
+							"key": "count",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Groups",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Bearer 123456789",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Groups",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Bearer 123456789",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Users/{{userId}}",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Group",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "123456789",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Groups/{{groupId}}",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Groups",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "123456789",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"schemas\": [\"urn:ietf:params:scim:schemas:core:2.0:User\"],\n    \"userName\": \"test.user@okta.local\",\n    \"name\": {\n        \"givenName\": \"Test\",\n        \"middleName\": \"tu\",\n        \"familyName\": \"User\"\n    },\n    \"emails\": [{\n        \"primary\": true,\n        \"value\": \"test.user@okta.local\",\n        \"type\": \"work\"\n    }],\n    \"displayName\": \"Test User\",\n    \"locale\": \"en-US\",\n    \"externalId\": \"00ujl29u0le5T6Aj10h7\",\n    \"groups\": [\n        {\n            \"displayName\": \"Group1\",\n            \"value\": 1\n        },\n        {\n            \"displayName\": \"Group1\",\n            \"value\": 2\n        }\n    ],\n    \"password\": \"1mz050nq\",\n    \"active\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Users",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Group",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "123456789",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"schemas\": [\"urn:ietf:params:scim:schemas:core:2.0:Group\"],\n    \"displayName\": \"Test SCIMv2\",\n    \"members\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Groups",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "123456789",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Users/{{userId}}",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Activation",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "123456789",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{scimUrl}}/scim/v2/Users/{{userId}}",
+					"host": [
+						"{{scimUrl}}"
+					],
+					"path": [
+						"scim",
+						"v2",
+						"Users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
