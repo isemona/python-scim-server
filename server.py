@@ -1,7 +1,11 @@
 
+<<<<<<< HEAD
 from flask import Flask
 import flask
 from flask import render_template
+=======
+from flask import Flask, render_template
+>>>>>>> a84833d015d6c3d854a0f61755334579644631a9
 
 app = Flask(__name__)
 database_url = os.getenv('DATABASE_URL', 'sqlite:///test-users.db')
@@ -11,7 +15,7 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def hello():
-    return 'Hello, World!'
+    return render_template('index.html')
 
 
 
