@@ -1,66 +1,21 @@
 
-<<<<<<< HEAD
-from flask import Flask
-import flask
-from flask import render_template
-=======
-from flask import Flask, render_template
->>>>>>> a84833d015d6c3d854a0f61755334579644631a9
+from flask import Flask, jsonify, abort, make_response, request, render_template
+from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
+from models import connect_to_db, db, User
+
 
 app = Flask(__name__)
-database_url = os.getenv('DATABASE_URL', 'sqlite:///test-users.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-db = SQLAlchemy(app)
+
+# Required to use Flask sessions and the debug toolbar
+# app.secret_key = "security"
 
 @app.route('/')
 def hello():
     return render_template('index.html')
 
-
-
-
-class ListResponse():
-    def __init__(self, list, start_index=1, count=None, total_results=0):
-        self.list = list
-        self.start_index = start_index
-        self.count = count
-        self.total_results = total_results
-
-## has a method called to_scim_resource not the same as the method under user. rv = render view?
-    def to_scim_resource(self):
-        rv = {
-            "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
-            "totalResults": self.total_results,
-            "startIndex": self.start_index,
-            "Resources": []
-        }
-        resources = []
-        for item in self.list:
-            resources.append(item.to_scim_resource())
-        if self.count:
-            rv['itemsPerPage'] = self.count #add another attribute to the main rv list = itemsPerPage
-        rv['Resources'] = resources
-        return rv
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.String(36), primary_key=True)
-    active = db.Column(db.Boolean, default=False)
-    userName = db.Column(db.String(250),
-                         unique=True,
-                         nullable=False,
-                         index=True)
-    familyName = db.Column(db.String(250))
-    middleName = db.Column(db.String(250))
-    givenName = db.Column(db.String(250))
-
-
-@app.route('/scim/v2/Users', methods=['GET'])
-
-
 ## Example call to make sure the route works
-@app.route('/scim/v2/Use', methods=['GET'])
+@app.route('/scim/v2/User', methods=['GET'])
 def users_post():
     response = {
             "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
@@ -77,9 +32,48 @@ def users_post():
                 "location": "test",
             }
         }
-    return flask.jsonify(response)
+    return jsonify(response)
 
+
+def scim_error(message, status_code=500):
+    rv = {
+        "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+        "detail": message,
+        "status": str(status_code)
+    }
+    return jsonify(rv), status_code
+
+@app.route('/scim/v2/Users/', methods=['GET'])
+
+
+@app.route('/scim/v2/Users/<string:user_id>', methods=['GET'])
+def user_get(user_id):
+    try:
+        #user = User.query.filter_by(id=user_id).one()
+        user = User.query.get(user_id)
+    except:
+        return scim_error("User not found", 404)
+    return jsonify(user)
+
+# @app.route('/scim/v2/Users', methods=['POST'])
+# @app.route('/scim/v2/Users/{{userId}}', methods=['PUT'])
+# @app.route('/scim/v2/Users/{{userId}}', methods=['PATCH'])
+# @app.route('/scim/v2/Groups', methods=['GET'])
+# @app.route('/scim/v2/Groups/{{groupId}}', methods=['GET'])
+# @app.route('/scim/v2/Groups', methods=['POST'])
 
 
 if __name__ == "__main__":
+
+    
+    # Turn on debugger only for testing app
+    #app.debug = True
     app.run(debug=True)
+    connect_to_db(app) # was missing! could not connect to server
+    # Use the DebugToolbar
+    # DebugToolbarExtension(app)
+
+    #app.run(host="0.0.0.0")
+
+
+
