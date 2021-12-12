@@ -1,14 +1,20 @@
 
 from flask import Flask, jsonify, abort, make_response, request, render_template
 from flask_sqlalchemy import SQLAlchemy
-from functools import wraps
-from models import connect_to_db, db, User
+
+from typing import Any
+from models import connect_to_db, db, User, Group
+
+# Required to use Flask sessions and the debug toolbar
+# app.secret_key = "security"
+
 
 
 app = Flask(__name__)
 
-# Required to use Flask sessions and the debug toolbar
-# app.secret_key = "security"
+## This is here to connect to the db first before quering or making changes to the db - if this is not here you will get an strange error 
+connect_to_db(app)
+
 
 @app.route('/')
 def hello():
@@ -43,8 +49,10 @@ def scim_error(message, status_code=500):
     }
     return jsonify(rv), status_code
 
-@app.route('/scim/v2/Users/', methods=['GET'])
-
+# @app.route('/scim/v2/Users', methods=['GET'])
+# def user_get_test():
+#     user = User.query.get("3ae230e6-9ed0-47bf-bb1e-b88fe82e6921")
+#     print(user.userName)
 
 @app.route('/scim/v2/Users/<string:user_id>', methods=['GET'])
 def user_get(user_id):
@@ -53,7 +61,9 @@ def user_get(user_id):
         user = User.query.get(user_id)
     except:
         return scim_error("User not found", 404)
-    return jsonify(user)
+    print("hello")
+    return jsonify(user.serialize())
+
 
 # @app.route('/scim/v2/Users', methods=['POST'])
 # @app.route('/scim/v2/Users/{{userId}}', methods=['PUT'])

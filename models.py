@@ -17,8 +17,6 @@ db = SQLAlchemy()
 #####################################################################
 # Model definitions
 
-
-
 # Define a many-to-many relationship
 links = db.Table(
     "link",
