@@ -14,27 +14,6 @@ locale = "en-US"
 externalId = "00ujl29u0le5T6Aj10h7"
 password = '123'
 
-# {
-#     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
-#     "id": "23a35c27-23d3-4c03-b4c5-6443c09e7173",
-#     "userName": "test.user@okta.local",
-#     "name": {
-#         "givenName": "Test",
-#         "middleName": "",
-#         "familyName": "User"
-#     },
-#     "active": true,
-#     "emails": [{
-#         "primary": true,
-#         "value": "test.user@okta.local",
-#         "type": "work",
-#         "display": "test.user@okta.local"
-#     }],
-#     "groups": [],
-#     "meta": {
-#         "resourceType": "User"
-#     }
-# }
 
 def load_users():
     """Load users from Faker Library to database"""
