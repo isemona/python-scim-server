@@ -40,4 +40,4 @@ def load_users():
 
 if __name__ == "__main__":
     connect_to_db(app)
-    load_users() # here 
+    load_users()  
