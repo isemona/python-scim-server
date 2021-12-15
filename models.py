@@ -83,7 +83,7 @@ class User(db.Model):
     def __repr__(self):
         return "<id {}>".format(self.id)
 
-    def serialize(self):
+    def scim_response(self):
         groups = []
         for group in self.groups:
             groups.append({"display": group.displayName, "value": group.id})
@@ -121,7 +121,7 @@ class Group(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     displayName = db.Column(db.String())
 
-    def serialize(self):
+    def scim_response(self):
         users = []
         for user in self.users:
             users.append({"display": user.userName, "value": user.id})
