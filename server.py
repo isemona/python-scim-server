@@ -62,6 +62,8 @@ def user_get(user_id):
 
 
 @app.route('/scim/v2/Users', methods=['POST'])
+
+
 def create_user():
     """Create User"""
     user_resource = request.get_json(force=True)
@@ -79,11 +81,13 @@ def create_user():
     schemas = request.json.get("schemas")
     userName = request.json.get("userName")
     
-    user = User.query.filter_by(userName=userName).first()
+
+    existing_user = User.query.filter_by(userName=userName).first()
     
     # check if user already in datbase
-    if user:
+    if existing_user:
         return scim_error("User already exists in the database.", 409)
+    
     else:
         try:
         
@@ -102,25 +106,29 @@ def create_user():
             userName=userName,
         )
             db.session.add(user)
-            if groups:
-                    for group in groups:
-                        existing_group = Group.query.get(group["value"])
-
-                        if existing_group:
-                            existing_group.users.append(user)
-                        else:
-                            new_group = Group(displayName=group["displayName"])
-                            db.session.add(new_group)
-                            new_group.users.append(user)
+            print("user created")
+            # if groups:
+            #     for group in groups:
+            #             print(group)
+            #             existing_group = Group.query.get(group["value"])
+            #             if existing_group:
+            #                 existing_group.users.append(user)
+            #             else:
+            #                 new_group = Group(displayName=group["displayName"])
+            #                 db.session.add(new_group)
+            #                 new_group.users.append(user)
 
             db.session.commit()
-            return make_response(jsonify(user.scim_response()), 201)
+            print("user committed")
+            return jsonify(user.scim_response()), 201
+            print("hello")
 
         except Exception as e:
             return str(e)
             
 
-# @app.route('/scim/v2/Users/{{userId}}', methods=['PUT'])
+@app.route('/scim/v2/Users/{{userId}}', methods=['PUT'])
+
 # @app.route('/scim/v2/Users/{{userId}}', methods=['PATCH'])
 # @app.route('/scim/v2/Groups', methods=['GET'])
 # @app.route('/scim/v2/Groups/{{groupId}}', methods=['GET'])
