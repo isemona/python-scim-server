@@ -62,8 +62,6 @@ def user_get(user_id):
 
 
 @app.route('/scim/v2/Users', methods=['POST'])
-
-
 def create_user():
     """Create User"""
     user_resource = request.get_json(force=True)
@@ -127,7 +125,30 @@ def create_user():
             return str(e)
             
 
-@app.route('/scim/v2/Users/{{userId}}', methods=['PUT'])
+@app.route('/scim/v2/Users/<string:user_id>', methods=['PUT'])
+def update_user(user_id):
+    """Update SCIM User"""
+    #user = User.query.get(user_id)
+    user = User.query.filter_by(id=user_id).one()
+    if not user:
+        return scim_error("User not found", 404)
+    else:
+        user.groups = request.json.get("groups")
+        user.active = request.json.get("active")
+        user.displayName = request.json.get("displayName")
+        user.emails = request.json.get("emails")
+        user.externalId = request.json.get("externalId")
+        user.locale = request.json.get("locale")
+        user.name = request.json.get("name")
+        user.familyName = request.json["name"].get("familyName")
+        user.middleName = request.json["name"].get("middleName")
+        user.givenName = request.json["name"].get("givenName")
+        user.password = request.json.get("password")
+        user.schemas = request.json.get("schemas")
+        user.userName = request.json.get("userName")
+
+        db.session.commit()
+        return jsonify(user.scim_response()), 200
 
 # @app.route('/scim/v2/Users/{{userId}}', methods=['PATCH'])
 # @app.route('/scim/v2/Groups', methods=['GET'])
