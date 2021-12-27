@@ -79,16 +79,15 @@ def create_user():
     schemas = request.json.get("schemas")
     userName = request.json.get("userName")
     
-
-    existing_user = User.query.filter_by(userName=userName).first()
-    
     # check if user already in datbase
-    if existing_user:
+    user_exists = User.query.filter_by(userName=userName).first()
+    
+    if user_exists:
         return scim_error("User already exists in the database.", 409)
     
     else:
         try:
-            user = User(
+            new_user = User(
             active=active,
             displayName=displayName,
             emails_primary=emails[0]["primary"],
@@ -102,8 +101,8 @@ def create_user():
             password=password,
             userName=userName,
         )
-            db.session.add(user)
-            print("user created")
+            db.session.add(new_user)
+            print("new user created")
             # if groups:
             #     for group in groups:
             #             print(group)
@@ -161,7 +160,11 @@ def deactivate_user(user_id):
         return jsonify(""), 204
 
 #@app.route('/scim/v2/Groups', methods=['GET'])
-
+# def get_groups(group_id):
+#     """Get Group With UID"""\
+#     group = Group.query.filter_by(id=group_id).one()
+#         return scim_error("Group not found", 404)
+#     return jsonify(group.scim_response())
 
 @app.route('/scim/v2/Groups/<string:group_id>', methods=['GET'])
 def get_group(group_id):
@@ -172,8 +175,29 @@ def get_group(group_id):
         return scim_error("Group not found", 404)
     return jsonify(group.scim_response())
 
-# @app.route('/scim/v2/Groups', methods=['POST'])
+@app.route('/scim/v2/Groups', methods=['POST'])
+def create_group():
+    """Create Group"""
+    group_resource = request.get_json(force=True)
+    print(group_resource)
+    displayName = request.json.get("displayName")
+    members = request.json.get("members")
 
+    # check if group already in datbase
+    group_exists = Group.query.filter_by(displayName=displayName)
+    print(group_exists)
+    if group_exists:
+        return scim_error("Group already exists in the database.", 409)
+    else:
+        new_group = Group(
+        displayName=displayName,
+        members=members,
+    )
+        db.session.add(new_group)
+        print("group created")
+        db.session.commit()
+        print("group committed")
+        return jsonify(group.scim_response()), 201
 
 if __name__ == "__main__":
 
