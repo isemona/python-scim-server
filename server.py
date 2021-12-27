@@ -2,8 +2,10 @@
 from flask import Flask, jsonify, abort, make_response, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
+
 from typing import Any
 from models import connect_to_db, db, User, Group
+from helper import *
 
 # Required to use Flask sessions and the debug toolbar
 # app.secret_key = "security"
@@ -29,26 +31,29 @@ def scim_error(message, status_code=500):
     return jsonify(response), status_code
 
 # work on this last!
-# @app.route('/scim/v2/Users', methods=['GET'])
-#"""Get SCIM Users"""
-# def get_user():
-#     user = User.query.get(userName)
+# you'll also need to filter for user
+@app.route('/scim/v2/Users', methods=['GET'])
+def get_users():
+    """Get SCIM Users"""
+    users = User.query
+    total_results = users.count()
+    #print(total_results)
+    found = users.all()
+
+    start_index = int(request.args.get("startIndex",1))
+    count = int(request.args.get("count",1))
     
-#     # count the number of user with the given email should be 1
-#     # return that count with the following response:
+    rv = ListResponse(
+        found,
+        start_index=start_index,
+        count=count,
+        total_results=total_results
+    )
 
-#     {
-#     "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
-#     "totalResults": 0,
-#     "startIndex": 1,
-#     "itemsPerPage": 0,
-#     "Resources": []
-#     }
-
-
-#     if not user:
-#         return scim_error("User not found", 404)
-
+    # count the number of user with the given email should be 1
+    # return that count with the following response:
+    
+    return jsonify(rv.scim_response()),200
     
 @app.route('/scim/v2/Users/<string:user_id>', methods=['GET'])
 def get_user(user_id):
@@ -195,6 +200,7 @@ def create_group():
     # return jsonify(new_group.scim_response()), 201
 
     # check if group already in datbase
+    # members=members removed for now
     group_exists = Group.query.filter_by(displayName=displayName)
     print(group_exists)
     if group_exists:
@@ -202,7 +208,6 @@ def create_group():
     else:
         new_group = Group(
         displayName=displayName,
-        members=members,
     )
         db.session.add(new_group)
         print("group created")
