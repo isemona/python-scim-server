@@ -51,7 +51,7 @@ def scim_error(message, status_code=500):
 
     
 @app.route('/scim/v2/Users/<string:user_id>', methods=['GET'])
-def user_get(user_id):
+def get_user(user_id):
     """Get User With UID"""
     try:
         user = User.query.filter_by(id=user_id).one()
@@ -160,17 +160,18 @@ def deactivate_user(user_id):
         db.session.commit()
         return jsonify(""), 204
 
-# @app.route('/scim/v2/Groups', methods=['GET'])
-# def user_get(user_id):
-#     """Get User With UID"""
-#     try:
-#         user = User.query.filter_by(id=user_id).one()
-#         # user = User.query.get(user_id)
-#     except:
-#         return scim_error("User not found", 404)
-#     return jsonify(user.scim_response())
+#@app.route('/scim/v2/Groups', methods=['GET'])
 
-# @app.route('/scim/v2/Groups/{{groupId}}', methods=['GET'])
+
+@app.route('/scim/v2/Groups/<string:group_id>', methods=['GET'])
+def get_group(group_id):
+    """Get Group With UID"""
+    try:
+        group = Group.query.filter_by(id=group_id).one()
+    except:
+        return scim_error("Group not found", 404)
+    return jsonify(group.scim_response())
+
 # @app.route('/scim/v2/Groups', methods=['POST'])
 
 
