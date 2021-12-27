@@ -116,7 +116,7 @@ def create_user():
 
             db.session.commit()
             print("user committed")
-            return jsonify(user.scim_response()), 201
+            return jsonify(new_user.scim_response()), 201
             print("hello")
 
         except Exception as e:
@@ -181,6 +181,7 @@ def create_group():
     group_resource = request.get_json(force=True)
     print(group_resource)
     displayName = request.json.get("displayName")
+    print(displayName)
     members = request.json.get("members")
 
     # check if group already in datbase
@@ -197,7 +198,7 @@ def create_group():
         print("group created")
         db.session.commit()
         print("group committed")
-        return jsonify(group.scim_response()), 201
+        return jsonify(new_group.scim_response()), 201
 
 if __name__ == "__main__":
 
