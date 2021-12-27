@@ -200,6 +200,10 @@ def create_group():
         print("group committed")
         return jsonify(new_group.scim_response()), 201
 
+
+#@app.route("/scim/v2/Groups/<string:group_id>", methods=["PATCH", "PUT"])
+#@app.route("/scim/v2/Groups/<string:group_id>", methods=["DELETE"])
+
 if __name__ == "__main__":
 
     # Turn on debugger only for testing app
