@@ -184,6 +184,16 @@ def create_group():
     print(displayName)
     members = request.json.get("members")
 
+    # new_group = Group(
+    #     displayName=displayName,
+    #     members=members,
+    # )
+    # db.session.add(new_group)
+    # print("group created")
+    # db.session.commit()
+    # print("group committed")
+    # return jsonify(new_group.scim_response()), 201
+
     # check if group already in datbase
     group_exists = Group.query.filter_by(displayName=displayName)
     print(group_exists)
