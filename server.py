@@ -107,19 +107,21 @@ def create_user():
             userName=userName,
         )
             db.session.add(new_user)
-            print("new user created")
-            # if groups:
-            #     for group in groups:
-            #             print(group)
-            #             existing_group = Group.query.get(group["value"])
-            #             if existing_group:
-            #                 existing_group.users.append(user)
-            #             else:
-            #                 new_group = Group(displayName=group["displayName"])
-            #                 db.session.add(new_group)
-            #                 new_group.users.append(user)
+
+            if groups:
+                for group in groups:
+                    print(group)
+                    existing_group = Group(displayName=group["displayName"])
+                    print(existing_group)
+                    if existing_group:
+                        existing_group.users.append(new_user)
+                    else:
+                        new_group = Group(displayName=group["displayName"])
+                        db.session.add(new_group)
+                        new_group.users.append(new_user)
 
             db.session.commit()
+            print("new user created")
             print("user committed")
             return jsonify(new_user.scim_response()), 201
             print("hello")
