@@ -218,8 +218,29 @@ def create_group():
         return jsonify(new_group.scim_response()), 201
 
 
-#@app.route("/scim/v2/Groups/<string:group_id>", methods=["PATCH", "PUT"])
-#@app.route("/scim/v2/Groups/<string:group_id>", methods=["DELETE"])
+# @app.route("/scim/v2/Groups/<string:group_id>", methods=["PATCH", "PUT"])
+# def update_group(group_id):
+#     """Update SCIM Group"""
+#     group = Group.query.filter_by(id=group_id).one()
+#     if not group:
+#         return scim_error("User not found", 404)
+#     else:
+#         changed_displayName = request.json["Operations"][0]["value"]["displayName"]
+#         group.displayName = changed_displayName
+#         db.session.commit()
+#         return jsonify(""), 204
+
+
+@app.route("/scim/v2/Groups/<string:group_id>", methods=["DELETE"])
+def update_group(group_id):
+    """Update SCIM Group"""
+    group_found = Group.query.filter_by(id=group_id).one()
+    if not group_found:
+        return scim_error("User not found", 404)
+    else:
+        db.session.delete(group_found)
+        db.session.commit()
+        return jsonify(""), 204
 
 if __name__ == "__main__":
 
