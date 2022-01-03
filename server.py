@@ -191,16 +191,6 @@ def create_group():
     print(displayName)
     members = request.json.get("members")
 
-    # new_group = Group(
-    #     displayName=displayName,
-    #     members=members,
-    # )
-    # db.session.add(new_group)
-    # print("group created")
-    # db.session.commit()
-    # print("group committed")
-    # return jsonify(new_group.scim_response()), 201
-
     # check if group already in datbase
     # members=members removed for now
     group_exists = Group.query.filter_by(displayName=displayName)
@@ -216,7 +206,6 @@ def create_group():
         db.session.commit()
         print("group committed")
         return jsonify(new_group.scim_response()), 201
-
 
 # @app.route("/scim/v2/Groups/<string:group_id>", methods=["PATCH", "PUT"])
 # def update_group(group_id):
