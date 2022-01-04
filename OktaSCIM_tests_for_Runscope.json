@@ -1,486 +1,611 @@
 {
-  "trigger_url": "https://api.runscope.com/radar/48be6a04-5d98-44da-b4c6-ac57494ec3d4/trigger", 
-  "name": "Okta SCIM 2.0 Tests ", 
-  "version": "1.0", 
-  "exported_at": 1463587943, 
+  "trigger_url": "https://api.runscope.com/radar/542c3c9f-2fd0-4272-8869-3e7222ce9b01/trigger",
+  "name": "Okta SCIM 2.0 SPEC Test",
+  "version": "1.0",
+  "exported_at": 1502143364,
   "steps": [
     {
-      "url": "{{SCIM Base URL}}/Users?count=2&startIndex=1", 
-      "variables": [], 
-      "step_type": "request", 
-      "auth": {}, 
-      "method": "GET", 
-      "note": "Test API Credentials", 
-      "headers": {
-        "Accept-Charset": [
-          "utf-8"
-        ], 
-        "Authentication": [
-          "Bearer Runscope "
-        ], 
-        "Content-Type": [
-          "application/scim+json; charset=utf-8"
-        ], 
-        "Accept": [
-          "application/scim+json"
-        ], 
-        "User-Agent": [
-          "OKTA SCIM Integration"
-        ]
-      }, 
-      "assertions": [
-        {
-          "comparison": "equal_number", 
-          "value": "200", 
-          "source": "response_status"
-        }, 
-        {
-          "comparison": "not_empty", 
-          "property": "Resources", 
-          "value": null, 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "has_value", 
-          "property": "schemas", 
-          "value": "urn:ietf:params:scim:api:messages:2.0:ListResponse", 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "is_a_number", 
-          "property": "itemsPerPage", 
-          "value": null, 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "is_a_number", 
-          "property": "startIndex", 
-          "value": null, 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "is_a_number", 
-          "property": "totalResults", 
-          "value": null, 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "is_less_than", 
-          "value": "600", 
-          "source": "response_time"
-        }
-      ], 
-      "scripts": [], 
-      "before_scripts": []
-    }, 
-    {
-      "url": "{{SCIM Base URL}}/Groups?count=100&startIndex=1", 
-      "variables": [], 
-      "step_type": "request", 
-      "auth": {}, 
-      "method": "GET", 
-      "note": "Please wait while we verify your application", 
-      "headers": {
-        "Accept-Charset": [
-          "utf-8"
-        ], 
-        "Authentication": [
-          "Bearer Runscope"
-        ], 
-        "Content-Type": [
-          "application/scim+json; charset=utf-8 "
-        ], 
-        "Accept": [
-          "application/scim+json"
-        ], 
-        "User-Agent": [
-          "OKTA SCIM Integration"
-        ]
-      }, 
-      "assertions": [
-        {
-          "comparison": "equal_number", 
-          "value": "200", 
-          "source": "response_status"
-        }, 
-        {
-          "comparison": "not_empty", 
-          "property": "Resources", 
-          "value": null, 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "is_a_number", 
-          "property": "startIndex", 
-          "value": null, 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "is_a_number", 
-          "property": "totalResults", 
-          "value": null, 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "has_value", 
-          "property": "schemas", 
-          "value": "urn:ietf:params:scim:api:messages:2.0:ListResponse", 
-          "source": "response_json"
-        }, 
-        {
-          "comparison": "is_less_than", 
-          "value": "600", 
-          "source": "response_time"
-        }
-      ], 
-      "scripts": [], 
-      "before_scripts": []
-    }, 
-    {
-      "url": "http://api.randomuser.me?nat=us,dk,fr,gb", 
+      "url": "{{SCIMBaseURL}}/Users?count=1&startIndex=1",
       "variables": [
         {
-          "source": "response_json", 
-          "property": "results[0].email", 
-          "name": "randomEmail"
-        }, 
-        {
-          "source": "response_json", 
-          "property": "results[0].login.username", 
-          "name": "randomUsername"
-        }, 
-        {
-          "source": "response_json", 
-          "property": "results[0].name.first", 
-          "name": "randomGivenName"
-        }, 
-        {
-          "source": "response_json", 
-          "property": "results[0].name.last", 
-          "name": "randomFamilyName"
-        }, 
-        {
-          "source": "response_json", 
-          "property": "results[0].login.md5", 
-          "name": "userIdThatDoesNotExist"
+          "source": "response_json",
+          "property": "Resources[0].id",
+          "name": "ISVUserid"
         }
-      ], 
-      "step_type": "request", 
-      "auth": {}, 
-      "method": "GET", 
-      "note": "Get a random user", 
-      "headers": {
-        "Content-Type": [
-          "application/json"
-        ], 
-        "Accept": [
-          "application/json"
-        ]
-      }, 
-      "assertions": [
-        {
-          "comparison": "equal_number", 
-          "value": 200, 
-          "source": "response_status"
-        }, 
-        {
-          "comparison": "is_less_than", 
-          "value": "600", 
-          "source": "response_time"
-        }
-      ], 
-      "scripts": [], 
-      "before_scripts": []
-    }, 
-    {
-      "url": "{{SCIM Base URL}}/Users?count=100&filter=userName eq \"{{randomEmail}}\"&startIndex=1", 
-      "variables": [], 
-      "step_type": "request", 
-      "auth": {}, 
-      "method": "GET", 
-      "note": "Make sure random user doesn't exist", 
+      ],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Test Users endpoint",
       "headers": {
         "Accept-Charset": [
           "utf-8"
-        ], 
-        "Authentication": [
-          "Bearer Runscope"
-        ], 
+        ],
         "Content-Type": [
           "application/scim+json; charset=utf-8"
-        ], 
+        ],
         "Accept": [
           "application/scim+json"
-        ], 
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
         "User-Agent": [
           "OKTA SCIM Integration"
         ]
-      }, 
+      },
       "assertions": [
         {
-          "comparison": "equal_number", 
-          "value": "200", 
+          "comparison": "equal_number",
+          "value": "200",
           "source": "response_status"
-        }, 
+        },
         {
-          "comparison": "equal_number", 
-          "property": "totalResults", 
-          "value": "0", 
+          "comparison": "not_empty",
+          "property": "Resources",
+          "value": null,
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "has_value", 
-          "property": "schemas", 
-          "value": "urn:ietf:params:scim:api:messages:2.0:ListResponse", 
+          "comparison": "has_value",
+          "property": "schemas",
+          "value": "urn:ietf:params:scim:api:messages:2.0:ListResponse",
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "is_less_than", 
-          "value": "600", 
-          "source": "response_time"
+          "comparison": "is_a_number",
+          "property": "itemsPerPage",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "is_a_number",
+          "property": "startIndex",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "is_a_number",
+          "property": "totalResults",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "Resources[0].id",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "Resources[0].name.familyName",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "Resources[0].name.givenName",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "Resources[0].userName",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "Resources[0].active",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "Resources[0].emails[0].value",
+          "value": null,
+          "source": "response_json"
         }
-      ], 
-      "scripts": [], 
-      "before_scripts": []
-    }, 
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "GET"
+    },
     {
-      "url": "{{SCIM Base URL}}/Users/{{userIdThatDoesNotExist}}}}", 
-      "variables": [], 
-      "step_type": "request", 
-      "auth": {}, 
-      "method": "GET", 
-      "note": "Check error schema", 
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "url": "{{SCIMBaseURL}}/Users/{{ISVUserid}}",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Get Users/{{id}} ",
       "headers": {
         "Accept-Charset": [
           "utf-8"
-        ], 
-        "Authentication": [
-          "Bearer Runscope"
-        ], 
+        ],
         "Content-Type": [
           "application/scim+json; charset=utf-8"
-        ], 
+        ],
         "Accept": [
           "application/scim+json"
-        ], 
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
         "User-Agent": [
           "OKTA SCIM Integration"
         ]
-      }, 
+      },
       "assertions": [
         {
-          "comparison": "equal_number", 
-          "value": "404", 
+          "comparison": "equal_number",
+          "value": "200",
           "source": "response_status"
-        }, 
+        },
         {
-          "comparison": "not_empty", 
-          "property": "detail", 
-          "value": null, 
+          "comparison": "not_empty",
+          "property": "id",
+          "value": null,
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "has_value", 
-          "property": "schemas", 
-          "value": "urn:ietf:params:scim:api:messages:2.0:Error", 
+          "comparison": "not_empty",
+          "property": "name.familyName",
+          "value": null,
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "is_less_than", 
-          "value": "600", 
-          "source": "response_time"
+          "comparison": "not_empty",
+          "property": "name.givenName",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "userName",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "active",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "emails[0].value",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "equal",
+          "property": "id",
+          "value": "{{ISVUserid}}",
+          "source": "response_json"
         }
-      ], 
-      "scripts": [], 
-      "before_scripts": []
-    }, 
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "GET"
+    },
     {
-      "body": "{\"schemas\":[\"urn:ietf:params:scim:schemas:core:2.0:User\"],\"userName\":\"{{randomUsername}}@okta.example.com\",\"name\":{\"givenName\":\"{{randomGivenName}}\",\"familyName\":\"{{randomFamilyName}}\"},\"emails\":[{\"primary\":true,\"value\":\"{{randomEmail}}\",\"type\":\"work\"}],\"displayName\":\"{{randomGivenName}} {{randomFamilyName}}\",\"externalId\":\"{{userIdThatDoesNotExist}}\",\"groups\":[],\"active\":true}", 
-      "form": {}, 
-      "url": "{{SCIM Base URL}}/Users", 
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "url": "{{SCIMBaseURL}}/Users?filter=userName eq \"{{InvalidUserEmail}}\"",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Test invalid User by username",
+      "headers": {
+        "Accept-Charset": [
+          "utf-8"
+        ],
+        "Content-Type": [
+          "application/scim+json; charset=utf-8"
+        ],
+        "Accept": [
+          "application/scim+json"
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
+        "User-Agent": [
+          "OKTA SCIM Integration"
+        ]
+      },
+      "assertions": [
+        {
+          "comparison": "equal_number",
+          "value": "200",
+          "source": "response_status"
+        },
+        {
+          "comparison": "has_value",
+          "property": "schemas",
+          "value": "urn:ietf:params:scim:api:messages:2.0:ListResponse",
+          "source": "response_json"
+        },
+        {
+          "comparison": "equal",
+          "property": "totalResults",
+          "value": "0",
+          "source": "response_json"
+        }
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "GET"
+    },
+    {
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "url": "{{SCIMBaseURL}}/Users/{{UserIdThatDoesNotExist}}",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Test invalid User by ID",
+      "headers": {
+        "Accept-Charset": [
+          "utf-8"
+        ],
+        "Content-Type": [
+          "application/scim+json; charset=utf-8"
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
+        "Accept": [
+          "application/scim+json"
+        ],
+        "User-Agent": [
+          "OKTA SCIM Integration"
+        ]
+      },
+      "assertions": [
+        {
+          "comparison": "equal_number",
+          "value": "404",
+          "source": "response_status"
+        },
+        {
+          "comparison": "not_empty",
+          "property": "detail",
+          "value": null,
+          "source": "response_json"
+        },
+        {
+          "comparison": "has_value",
+          "property": "schemas",
+          "value": "urn:ietf:params:scim:api:messages:2.0:Error",
+          "source": "response_json"
+        }
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "GET"
+    },
+    {
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "url": "{{SCIMBaseURL}}/Users?filter=userName eq \"{{randomEmail}}\"",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Make sure random user doesn't exist",
+      "headers": {
+        "Accept-Charset": [
+          "utf-8"
+        ],
+        "Content-Type": [
+          "application/scim+json; charset=utf-8"
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
+        "Accept": [
+          "application/scim+json"
+        ],
+        "User-Agent": [
+          "OKTA SCIM Integration"
+        ]
+      },
+      "assertions": [
+        {
+          "comparison": "equal_number",
+          "value": "200",
+          "source": "response_status"
+        },
+        {
+          "comparison": "equal_number",
+          "property": "totalResults",
+          "value": "0",
+          "source": "response_json"
+        },
+        {
+          "comparison": "has_value",
+          "property": "schemas",
+          "value": "urn:ietf:params:scim:api:messages:2.0:ListResponse",
+          "source": "response_json"
+        }
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "GET"
+    },
+    {
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "body": "{\"schemas\":[\"urn:ietf:params:scim:schemas:core:2.0:User\"],\"userName\":\"{{randomUsername}}\",\"name\":{\"givenName\":\"{{randomGivenName}}\",\"familyName\":\"{{randomFamilyName}}\"},\"emails\":[{\"primary\":true,\"value\":\"{{randomEmail}}\",\"type\":\"work\"}],\"displayName\":\"{{randomGivenName}} {{randomFamilyName}}\",\"active\":true}",
+      "form": {},
+      "url": "{{SCIMBaseURL}}/Users",
       "variables": [
         {
-          "source": "response_json", 
-          "property": "id", 
+          "source": "response_json",
+          "property": "id",
           "name": "idUserOne"
+        },
+        {
+          "source": "response_json",
+          "property": "emails[0].value",
+          "name": "randomUserEmail"
         }
-      ], 
-      "step_type": "request", 
-      "auth": {}, 
-      "note": "Create Okta user with realisitic values", 
+      ],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Create Okta user with realistic values",
       "headers": {
-        "Accept-Charset": [
-          "utf-8"
-        ], 
-        "Authentication": [
-          "Bearer Runscope"
-        ], 
         "Content-Type": [
-          "application/scim+json; charset=utf-8"
-        ], 
+          "application/json"
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
         "Accept": [
-          "application/scim+json"
-        ], 
-        "User-Agent": [
-          "OKTA SCIM Integration"
+          "application/scim+json; charset=utf-8"
         ]
-      }, 
+      },
       "assertions": [
         {
-          "comparison": "equal_number", 
-          "value": "201", 
+          "comparison": "equal_number",
+          "value": "201",
           "source": "response_status"
-        }, 
+        },
         {
-          "comparison": "equal", 
-          "property": "active", 
-          "value": "true", 
+          "comparison": "equal",
+          "property": "active",
+          "value": "true",
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "not_empty", 
-          "property": "id", 
-          "value": null, 
+          "comparison": "not_empty",
+          "property": "id",
+          "value": null,
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "equal", 
-          "property": "name.familyName", 
-          "value": "{{randomFamilyName}}", 
+          "comparison": "equal",
+          "property": "name.familyName",
+          "value": "{{randomFamilyName}}",
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "equal", 
-          "property": "name.givenName", 
-          "value": "{{randomGivenName}}", 
+          "comparison": "equal",
+          "property": "name.givenName",
+          "value": "{{randomGivenName}}",
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "contains", 
-          "property": "schemas", 
-          "value": "urn:ietf:params:scim:schemas:core:2.0:User", 
+          "comparison": "contains",
+          "property": "schemas",
+          "value": "urn:ietf:params:scim:schemas:core:2.0:User",
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "equal", 
-          "property": "userName", 
-          "value": "{{randomUsername}}@okta.example.com", 
+          "comparison": "equal",
+          "property": "userName",
+          "value": "{{randomUsername}}",
           "source": "response_json"
-        }, 
-        {
-          "comparison": "is_less_than", 
-          "value": "600", 
-          "source": "response_time"
         }
-      ], 
-      "scripts": [], 
-      "before_scripts": [], 
+      ],
+      "scripts": [
+        ""
+      ],
+      "before_scripts": [],
       "method": "POST"
-    }, 
+    },
     {
-      "url": "{{SCIM Base URL}}/Users/{{idUserOne}}", 
-      "variables": [], 
-      "step_type": "request", 
-      "auth": {}, 
-      "method": "GET", 
-      "note": "Verify that user was created", 
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "url": "{{SCIMBaseURL}}/Users/{{idUserOne}}",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Verify that user was created",
       "headers": {
         "Accept-Charset": [
           "utf-8"
-        ], 
-        "Authentication": [
-          "Bearer Runscope"
-        ], 
+        ],
         "Content-Type": [
           "application/scim+json; charset=utf-8"
-        ], 
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
         "Accept": [
           "application/scim+json"
-        ], 
+        ],
         "User-Agent": [
           "OKTA SCIM Integration"
         ]
-      }, 
+      },
       "assertions": [
         {
-          "comparison": "equal_number", 
-          "value": "200", 
+          "comparison": "equal_number",
+          "value": "200",
           "source": "response_status"
-        }, 
+        },
         {
-          "comparison": "equal", 
-          "property": "userName", 
-          "value": "{{randomUsername}}@okta.example.com", 
+          "comparison": "equal",
+          "property": "userName",
+          "value": "{{randomUsername}}",
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "equal", 
-          "property": "name.familyName", 
-          "value": "{{randomFamilyName}}", 
+          "comparison": "equal",
+          "property": "name.familyName",
+          "value": "{{randomFamilyName}}",
           "source": "response_json"
-        }, 
+        },
         {
-          "comparison": "equal", 
-          "property": "name.givenName", 
-          "value": "{{randomGivenName}}", 
+          "comparison": "equal",
+          "property": "name.givenName",
+          "value": "{{randomGivenName}}",
           "source": "response_json"
-        }, 
-        {
-          "comparison": "is_less_than", 
-          "value": "600", 
-          "source": "response_time"
         }
-      ], 
-      "scripts": [], 
-      "before_scripts": []
-    }, 
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "GET"
+    },
     {
-      "body": "{\"schemas\":[\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"],\"Operations\":[{\"op\":\"replace\",\"value\":{\"active\":false}}]}", 
-      "form": {}, 
-      "url": "{{SCIM Base URL}}/Users/{{idUserOne}}", 
-      "variables": [], 
-      "step_type": "request", 
-      "auth": {}, 
-      "note": "Unassign user from app", 
+      "duration": 10,
+      "step_type": "pause"
+    },
+    {
+      "body": "{\"schemas\":[\"urn:ietf:params:scim:schemas:core:2.0:User\"],\"userName\":\"{{randomUsername}}\",\"name\":{\"givenName\":\"{{randomGivenName}}\",\"familyName\":\"{{randomFamilyName}}\"},\"emails\":[{\"primary\":true,\"value\":\"{{randomUsername}}\",\"type\":\"work\"}],\"displayName\":\"{{randomGivenName}} {{randomFamilyName}}\",\"active\":true}",
+      "form": {},
+      "url": "{{SCIMBaseURL}}/Users",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Expect failure when recreating user with same values",
+      "headers": {
+        "Content-Type": [
+          "application/json"
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
+        "Accept": [
+          "application/scim+json; charset=utf-8"
+        ]
+      },
+      "assertions": [
+        {
+          "comparison": "equal_number",
+          "value": "409",
+          "source": "response_status"
+        }
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "POST"
+    },
+    {
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "url": "{{SCIMBaseURL}}/Users?filter=userName eq \"{{randomUsernameCaps}}\"",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Required Test: Username Case Sensitivity Check",
       "headers": {
         "Accept-Charset": [
           "utf-8"
-        ], 
-        "Authentication": [
-          "Bearer Runscope"
-        ], 
+        ],
         "Content-Type": [
           "application/scim+json; charset=utf-8"
-        ], 
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
         "Accept": [
           "application/scim+json"
-        ], 
+        ],
         "User-Agent": [
           "OKTA SCIM Integration"
         ]
-      }, 
+      },
       "assertions": [
         {
-          "comparison": "equal_number", 
-          "value": "200", 
+          "comparison": "equal_number",
+          "value": "200",
           "source": "response_status"
-        }, 
+        }
+      ],
+      "scripts": [],
+      "before_scripts": [],
+      "method": "GET"
+    },
+    {
+      "duration": 5,
+      "step_type": "pause"
+    },
+    {
+      "url": "{{SCIMBaseURL}}/Groups",
+      "variables": [],
+      "multipart_form": [],
+      "step_type": "request",
+      "auth": {},
+      "note": "Optional Test: Verify Groups endpoint",
+      "headers": {
+        "Accept-Charset": [
+          "utf-8"
+        ],
+        "Content-Type": [
+          "application/scim+json; charset=utf-8"
+        ],
+        "Accept": [
+          "application/scim+json"
+        ],
+        "Authorization": [
+          "{{auth}}"
+        ],
+        "User-Agent": [
+          "OKTA SCIM Integration"
+        ]
+      },
+      "assertions": [
         {
-          "comparison": "equal", 
-          "property": "active", 
-          "value": "false", 
-          "source": "response_json"
-        }, 
+          "comparison": "equal_number",
+          "value": "200",
+          "source": "response_status"
+        },
         {
-          "comparison": "is_less_than", 
-          "value": "600", 
+          "comparison": "is_less_than",
+          "value": "600",
           "source": "response_time"
         }
-      ], 
-      "scripts": [], 
-      "before_scripts": [], 
-      "method": "PATCH"
+      ],
+      "scripts": [
+        "var data = JSON.parse(response.body);\nvar max = data.totalResults;\nvar res = data.Resources;\nvar exists = false;\n\nif (max === 0)\n\tassert(\"nogroups\", \"No Groups found in the endpoint\");\nelse if (max >= 1 && Array.isArray(res)) {\n    exists = true;\n    assert.ok(exists, \"Resources is of type Array\");\n\tlog(exists);\n}"
+      ],
+      "before_scripts": [],
+      "method": "GET"
     }
-  ], 
+  ],
   "description": "Basic tests to see if your SCIM server will work with Okta"
 }
