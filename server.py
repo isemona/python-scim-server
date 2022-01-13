@@ -166,12 +166,36 @@ def deactivate_user(user_id):
         db.session.commit()
         return jsonify(""), 204
 
-#@app.route('/scim/v2/Groups', methods=['GET'])
-# def get_groups(group_id):
-#     """Get Group With UID"""\
-#     group = Group.query.filter_by(id=group_id).one()
-#         return scim_error("Group not found", 404)
-#     return jsonify(group.scim_response())
+@app.route('/scim/v2/Groups', methods=['GET'])
+def get_groups():
+    """Get Groups"""\
+    # group = Group.query.filter_by(id=group_id).one()
+    #     return scim_error("Group not found", 404)
+    # return jsonify(group.scim_response())
+    # groups = Group.query
+    # print(groups)
+    # for group in groups:
+    #     return group
+        
+    groups = Group.query
+    total_results = groups.count()
+    #print(total_results)
+    found = groups.all()
+
+    start_index = int(request.args.get("startIndex",1))
+    count = int(request.args.get("count",1))
+    
+    rv = ListResponse(
+        found,
+        start_index=start_index,
+        count=count,
+        total_results=total_results
+    )
+
+    # count the number of user with the given email should be 1
+    # return that count with the following response:
+    
+    return jsonify(rv.scim_response()),200
 
 @app.route('/scim/v2/Groups/<string:group_id>', methods=['GET'])
 def get_group(group_id):
