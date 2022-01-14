@@ -35,26 +35,45 @@ def scim_error(message, status_code=500):
 @app.route('/scim/v2/Users', methods=['GET'])
 def get_users():
     """Get SCIM Users"""
-    users = User.query
-    total_results = users.count()
-    #print(total_results)
-    found = users.all()
+    start_index = 1
+    count = None
 
-    start_index = int(request.args.get("startIndex",1))
-    count = int(request.args.get("count",1))
-    
-    rv = ListResponse(
-        found,
-        start_index=start_index,
-        count=count,
-        total_results=total_results
+    if "start_index" in request.args:
+        start_index = int(request.args["startIndex"])
+
+    if "count" in request.args:
+        count = int(request.args["count"])
+
+    if "filter" in request.args:
+        single_filter = request.args["filter"].split(" ")
+        filter_value = single_filter[2].strip('"')
+
+        users = User.query.filter_by(userName=filter_value).first()
+
+        if not users:
+            users = []
+        else:
+            users = [users]
+
+    else:
+        users = User.query.paginate(start_index, count, False).items
+
+    # not yet serialized
+    list_users = [e.scim_response() for e in users]
+
+    return make_response(
+        jsonify(
+            {
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": len(users),
+                "startIndex": start_index,
+                "itemsPerPage": len(users),
+                "Resources": list_users,
+            }
+        ),
+        200,
     )
 
-    # count the number of user with the given email should be 1
-    # return that count with the following response:
-    
-    return jsonify(rv.scim_response()),200
-    
 @app.route('/scim/v2/Users/<string:user_id>', methods=['GET'])
 def get_user(user_id):
     """Get User With UID"""
